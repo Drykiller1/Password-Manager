@@ -24,8 +24,14 @@ def create_password():
     password_entry.insert(0, password)
     pyperclip.copy(password)
 
+def save_email():
+    try:
+        with open("email.txt", "r") as file:
+
+
 #append the data that was input by the user to json
 def save():
+    allow_to_add = True
     show_askokcancel_message = True
     website = website_entry.get()
     email = email_entry.get()
@@ -36,8 +42,13 @@ def save():
             "password": password,
         }
     }
-
-    if password == '' or website == '':
+    with open("data.json", "r") as file:
+        data = json.load(file)
+        for i in data:
+            if i == website:
+                allow_to_add = False
+                messagebox.showwarning(title="exiting site", message=f"There is already information saved on the site {website}")
+    if password == '' and allow_to_add or website == '' and allow_to_add:
         messagebox.showwarning(title="wrong", message="Please fill all the empty fields.")
     else:
         try:
@@ -50,7 +61,7 @@ def save():
             save()
 
 
-        if show_askokcancel_message:
+        if show_askokcancel_message and allow_to_add:
             is_okay = messagebox.askokcancel(title=website, message=f"These are the information:\nEmail: {email}\nPassword: {password}\n Is it okay to save?")
             if is_okay:
                 with open("data.json", "r") as file:
